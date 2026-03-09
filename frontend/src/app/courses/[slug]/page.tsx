@@ -322,8 +322,22 @@ export default function CourseDetailPage() {
                       title={activeLesson.title}
                     />
                   </div>
-                  <div className="p-5">
+                  <div className="p-5 flex items-center justify-between">
                     <h3 className="font-heading font-bold text-primary">{activeLesson.title}</h3>
+                    {enrolled && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            await api.post(`/enrollments/complete-lesson`, { lessonId: activeLesson.id, courseId: course.id });
+                            toast.success("Lesson marked as complete! 🎉");
+                            setActiveLesson({ ...activeLesson, completed: true });
+                          } catch { toast.error("Failed to mark complete"); }
+                        }}
+                        className={`text-sm font-heading font-bold px-4 py-2 rounded-xl transition-all ${activeLesson.completed ? "bg-accent/10 text-accent cursor-default" : "bg-accent text-white hover:bg-green-600"}`}
+                      >
+                        {activeLesson.completed ? "✓ Completed" : "Mark Complete"}
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

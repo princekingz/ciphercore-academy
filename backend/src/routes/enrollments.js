@@ -34,4 +34,21 @@ router.get('/check/:courseId', authenticate, async (req, res) => {
   res.json({ enrolled: !!rows[0] });
 });
 
+router.post('/complete-lesson', authenticate, async (req, res) => {
+  const { lessonId, courseId } = req.body;
+  try {
+    await db.query(
+      `INSERT INTO lesson_completions (user_id, lesson_id, course_id) VALUES ($1, $2, $3) ON CONFLICT (user_id, lesson_id) DO NOTHING`,
+      [req.user.id, lessonId, courseId]
+    );
+    const { rows } = await db.query(
+      `SELECT COUNT(*) as completed FROM lesson_completions WHERE user_id=$1 AND course_id=$2`,
+      [req.user.id, courseId]
+    );
+    res.json({ success: true, completed: rows[0].completed });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to mark complete' });
+  }
+});
+
 module.exports = router;
