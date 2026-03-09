@@ -92,9 +92,21 @@ export default function AdminPage() {
                       <td className="px-5 py-4 font-medium text-primary text-sm">{u.name}</td>
                       <td className="px-5 py-4 text-slate-500 text-sm">{u.email}</td>
                       <td className="px-5 py-4">
-                        <span className={`tag capitalize ${u.role === "admin" ? "bg-red-100 text-red-700" : u.role === "instructor" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}`}>
-                          {u.role}
-                        </span>
+                        <select
+                          value={u.role}
+                          onChange={async (e) => {
+                            try {
+                              await api.patch(`/admin/users/${u.id}/role`, { role: e.target.value });
+                              setUsers(users.map((usr: any) => usr.id === u.id ? { ...usr, role: e.target.value } : usr));
+                              toast.success("Role updated!");
+                            } catch { toast.error("Failed to update role"); }
+                          }}
+                          className="text-xs font-heading font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white cursor-pointer outline-none"
+                        >
+                          <option value="student">student</option>
+                          <option value="instructor">instructor</option>
+                          <option value="admin">admin</option>
+                        </select>
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs">{new Date(u.created_at).toLocaleDateString()}</td>
                     </tr>
