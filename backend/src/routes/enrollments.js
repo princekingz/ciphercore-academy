@@ -37,13 +37,13 @@ router.get('/check/:courseId', authenticate, async (req, res) => {
 router.post('/complete-lesson', authenticate, async (req, res) => {
   const { lessonId, courseId } = req.body;
   try {
-    await db.query(
-      `INSERT INTO lesson_completions (user_id, lesson_id, course_id) VALUES ($1, $2, $3) ON CONFLICT (user_id, lesson_id) DO NOTHING`,
-      [req.user.id, lessonId, courseId]
+   await db.query(
+      `INSERT INTO lesson_progress (user_id, lesson_id) VALUES ($1, $2) ON CONFLICT (user_id, lesson_id) DO UPDATE SET completed=true, updated_at=NOW()`,
+      [req.user.id, lessonId]
     );
     const { rows } = await db.query(
-      `SELECT COUNT(*) as completed FROM lesson_completions WHERE user_id=$1 AND course_id=$2`,
-      [req.user.id, courseId]
+      `SELECT COUNT(*) as completed FROM lesson_progress WHERE user_id=$1 AND completed=true`,
+      [req.user.id]
     );
     res.json({ success: true, completed: rows[0].completed });
   } catch (err) {
