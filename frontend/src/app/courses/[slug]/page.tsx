@@ -206,11 +206,7 @@ export default function CourseDetailPage() {
                             <button onClick={() => setShowPayment(true)}
                               className="w-full py-3.5 bg-secondary text-white rounded-xl font-heading font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
                               Enroll Now
-                            </button>
-                            <button onClick={handleEnrollFree}
-                              className="w-full py-3 border-2 border-slate-200 text-slate-600 rounded-xl font-heading font-semibold text-sm hover:border-secondary hover:text-secondary transition-all">
-                              {enrolling ? "Processing..." : "Try Free Preview"}
-                            </button>
+                          
                           </>
                         ) : (
                           <div className="space-y-3">
