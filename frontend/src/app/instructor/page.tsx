@@ -101,6 +101,7 @@ export default function InstructorPage() {
                       <div className="flex items-center gap-4">
                         <span className="font-heading font-bold text-primary text-sm">KSh {parseInt(c.price || 0).toLocaleString()}</span>
                         <span className={`tag ${c.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{c.status}</span>
+                         <a href={`/instructor/course/${c.id}`} className="text-xs font-heading font-bold text-secondary hover:underline">Manage →</a>
                       </div>
                     </div>
                   ))}
