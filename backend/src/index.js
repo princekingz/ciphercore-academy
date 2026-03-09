@@ -15,6 +15,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
