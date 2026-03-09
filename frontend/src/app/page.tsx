@@ -49,7 +49,7 @@ const CATEGORIES = [
 
 const STATS = [
   { value: "12,400+", label: "Students Trained" },
-  { value: "98%", label: "Job Placement" },
+  { value: "Top Grads", label: "Work at CipherCore" },
   { value: "110+", label: "Courses" },
   { value: "4.9★", label: "Average Rating" },
 ];
@@ -61,7 +61,7 @@ const PRICING = [
   },
   {
     name: "Professional", price: 15000, highlight: true,
-    features: ["All 110+ courses", "Priority certificates", "2 mentorship sessions/month", "Career counseling", "Job placement help", "Discord VIP"],
+    features: ["All 110+ courses", "Priority certificates", "2 mentorship sessions/month", "Career counseling", "Career development support", "Discord VIP"],
   },
   {
     name: "Bootcamp", price: 20000, highlight: false,
@@ -235,7 +235,7 @@ export default function Home() {
                 <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
                   <p className="font-heading font-bold text-white text-xl mb-6">Student Outcomes</p>
                   {[
-                    { label: "Job Placement Rate", val: 98, color: "bg-accent" },
+                    { label: "Top Graduates Join Our Team", val: 100, color: "bg-accent" },
                     { label: "Course Completion Rate", val: 87, color: "bg-secondary" },
                     { label: "Student Satisfaction", val: 96, color: "bg-purple-500" },
                     { label: "Average Salary Increase", val: 73, color: "bg-orange-400" },
@@ -261,9 +261,9 @@ export default function Home() {
                 </div>
                 {/* Floating card */}
                 <div className="absolute -bottom-5 -right-5 bg-accent rounded-2xl p-4 shadow-2xl shadow-green-500/20">
-                  <p className="font-heading font-black text-white text-2xl">98%</p>
-                  <p className="text-green-100 text-xs font-heading">Job placement</p>
-                </div>
+  <p className="font-heading font-black text-white text-2xl">🏆</p>
+  <p className="text-green-100 text-xs font-heading">Top grads join our team</p>
+</div>
               </div>
             </div>
           </div>
