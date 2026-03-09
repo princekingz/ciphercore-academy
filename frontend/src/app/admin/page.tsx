@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -5,7 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
 import { Users, BookOpen, DollarSign, TrendingUp, Shield } from "lucide-react";
-
+import toast from "react-hot-toast";
 export default function AdminPage() {
   const { user, loadUser } = useAuthStore();
   const router = useRouter();
