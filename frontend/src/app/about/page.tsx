@@ -7,7 +7,7 @@ import { ArrowRight, Target, Heart, Shield, Globe } from "lucide-react";
 export default function AboutPage() {
   return (
     <>
-      <Navbar dark />
+      <Navbar />
       <div className="pt-16">
         <section className="bg-primary py-20">
           <div className="container max-w-3xl">
