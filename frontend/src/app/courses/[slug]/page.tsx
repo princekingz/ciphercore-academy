@@ -35,6 +35,9 @@ export default function CourseDetailPage() {
   const [modules, setModules] = useState<any[]>([]);
   const [showPayment, setShowPayment] = useState(false);
   const [phone, setPhone] = useState("");
+const [reviews, setReviews] = useState<any[]>([]);
+const [newRating, setNewRating] = useState(0);
+const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
     loadUser();
@@ -42,7 +45,7 @@ export default function CourseDetailPage() {
   }, [slug]);
 
   useEffect(() => {
-    if (user && course) checkEnrollment();
+    if (user && course) { checkEnrollment(); fetchReviews(); }
   }, [user, course]);
 
   const fetchCourse = async () => {
@@ -67,6 +70,12 @@ export default function CourseDetailPage() {
     try {
       const { data } = await api.get(`/enrollments/check/${course.id}`);
       setEnrolled(data.enrolled);
+    } catch {}
+  };
+const fetchReviews = async () => {
+    try {
+      const { data } = await api.get(`/reviews/course/${course?.id}`);
+      setReviews(data.reviews || []);
     } catch {}
   };
 
@@ -309,6 +318,63 @@ export default function CourseDetailPage() {
               <div className="bg-white rounded-2xl border border-slate-200 p-7">
                 <h2 className="font-heading font-bold text-primary text-xl mb-4">About this course</h2>
                 <p className="text-slate-600 text-sm leading-relaxed">{course.description}</p>
+              </div>
+{/* Reviews */}
+              <div className="bg-white rounded-2xl border border-slate-200 p-7">
+                <h2 className="font-heading font-bold text-primary text-xl mb-6">Student Reviews</h2>
+                {enrolled && (
+                  <div className="mb-6 p-5 bg-slate-50 rounded-xl border border-slate-200">
+                    <p className="font-heading font-semibold text-primary text-sm mb-3">Leave a Review</p>
+                    <div className="flex gap-2 mb-3">
+                      {[1,2,3,4,5].map(star => (
+                        <button key={star} onClick={() => setNewRating(star)}
+                          className={`text-2xl transition-transform hover:scale-110 ${star <= newRating ? "text-amber-400" : "text-slate-300"}`}>
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                    <textarea value={newComment} onChange={e => setNewComment(e.target.value)}
+                      placeholder="Share your experience with this course..."
+                      className="input w-full resize-none text-sm mb-3" rows={3}/>
+                    <button onClick={async () => {
+                      if (!newRating) { toast.error("Select a rating"); return; }
+                      try {
+                        await api.post(`/reviews/course/${course.id}`, { rating: newRating, comment: newComment });
+                        toast.success("Review submitted!");
+                        setNewRating(0);
+                        setNewComment("");
+                        fetchReviews();
+                      } catch { toast.error("Failed to submit review"); }
+                    }} className="btn-primary text-sm py-2 px-5">Submit Review</button>
+                  </div>
+                )}
+                {reviews.length === 0 ? (
+                  <div className="text-center py-8 text-slate-400">
+                    <p className="text-sm">No reviews yet. Be the first to review!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {reviews.map((r: any) => (
+                      <div key={r.id} className="flex gap-4 pb-4 border-b border-slate-100 last:border-0">
+                        <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-white font-heading font-bold shrink-0">
+                          {r.user_name?.charAt(0)}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="font-heading font-semibold text-primary text-sm">{r.user_name}</p>
+                            <span className="text-xs text-slate-400">{new Date(r.created_at).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex gap-0.5 mb-2">
+                            {[1,2,3,4,5].map(s => (
+                              <span key={s} className={`text-sm ${s <= r.rating ? "text-amber-400" : "text-slate-200"}`}>★</span>
+                            ))}
+                          </div>
+                          <p className="text-slate-600 text-sm">{r.comment}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Video Player (if lesson selected) */}
