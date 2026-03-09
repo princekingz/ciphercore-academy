@@ -23,17 +23,17 @@ const DEMO_COURSES = [
 
 const TESTIMONIALS = [
   {
-    name: "Amina Wanjiku", role: "Security Analyst @ Safaricom", rating: 5,
+    name: "Amina Wanjiku", role: "Security Analyst @ Rappi ", rating: 5,
     text: "I went from zero cybersecurity knowledge to landing a job at Safaricom in 7 months. The ethical hacking course was incredibly hands-on — I was running actual attacks in a lab by week two.",
     photo: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&auto=format&fit=crop&q=80",
   },
   {
-    name: "David Ochieng", role: "Full-Stack Developer @ Andela", rating: 5,
+    name: "David Ochieng", role: "Full-Stack Developer @ Loft (Brazil)", rating: 5,
     text: "The web dev curriculum is seriously comprehensive. React, Node.js, databases, deployment — everything you actually need. I got my Andela offer 2 weeks after finishing the bootcamp.",
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&auto=format&fit=crop&q=80",
   },
   {
-    name: "Fatuma Hassan", role: "Data Analyst @ Equity Bank", rating: 5,
+    name: "Fatuma Hassan", role: "Data Analyst @ Tech Hub", rating: 5,
     text: "Coming from an accounting background I was nervous, but the Data Analysis course meets you where you are. The Power BI project I built in the final week is now used daily at my job.",
     photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&auto=format&fit=crop&q=80",
   },
