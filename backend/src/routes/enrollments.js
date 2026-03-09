@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../utils/db');
 const { authenticate } = require('../middleware/auth');
 
-router.get('/my-courses', authenticate, async (req, res) => {
+router.get('/my', authenticate, async (req, res) => {
   try {
     const { rows } = await db.query(`
       SELECT e.*, c.title, c.slug, c.thumbnail_url, c.category, c.level, u.name as instructor_name,
