@@ -35,7 +35,7 @@ const TESTIMONIALS = [
   {
     name: "Fatuma Hassan", role: "Data Analyst @ Tech Hub", rating: 5,
     text: "Coming from an accounting background I was nervous, but the Data Analysis course meets you where you are. The Power BI project I built in the final week is now used daily at my job.",
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&auto=format&fit=crop&q=80",
+    photo: "",
   },
 ];
 
