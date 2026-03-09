@@ -201,13 +201,15 @@ export default function CourseDetailPage() {
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {!showPayment ? (
-                          <>
-                            <button onClick={() => setShowPayment(true)}
-                              className="w-full py-3.5 bg-secondary text-white rounded-xl font-heading font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
-                              Enroll Now
-                          
-                          </>
+                 
+                           {!showPayment ? (
+  <>
+    <button onClick={() => setShowPayment(true)}
+      className="w-full py-3.5 bg-secondary text-white rounded-xl font-heading font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
+      Enroll Now
+    </button>
+  </>
+                        
                         ) : (
                           <div className="space-y-3">
                             <p className="font-heading font-bold text-primary text-sm">Pay with M-Pesa</p>
