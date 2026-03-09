@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140" width="400" height="140">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background pill -->
+  <rect width="400" height="140" rx="16" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid lines -->
+  <line x1="0" y1="35" x2="400" y2="35" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  <line x1="0" y1="70" x2="400" y2="70" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  <line x1="0" y1="105" x2="400" y2="105" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  <line x1="100" y1="0" x2="100" y2="140" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  <line x1="200" y1="0" x2="200" y2="140" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  <line x1="300" y1="0" x2="300" y2="140" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+
+  <!-- Glow orb behind shield -->
+  <ellipse cx="65" cy="70" rx="45" ry="45" fill="rgba(37,99,235,0.12)"/>
+
+  <!-- Shield shape -->
+  <path d="M65 22 L90 32 L90 65 Q90 88 65 100 Q40 88 40 65 L40 32 Z" fill="url(#shieldGrad)" filter="url(#softglow)"/>
+
+  <!-- Shield inner highlight -->
+  <path d="M65 27 L85 36 L85 64 Q85 84 65 95 Q62 93 59 91 L59 36 Z" fill="rgba(255,255,255,0.08)"/>
+
+  <!-- Circuit lines inside shield -->
+  <line x1="50" y1="52" x2="80" y2="52" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="50" y1="62" x2="80" y2="62" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="52" y1="72" x2="78" y2="72" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="57" y1="52" x2="57" y2="62" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="65" y1="52" x2="65" y2="72" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="73" y1="52" x2="73" y2="62" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Circuit dots -->
+  <circle cx="57" cy="52" r="2.5" fill="#22C55E" filter="url(#glow)"/>
+  <circle cx="65" cy="52" r="2.5" fill="#22C55E" filter="url(#glow)"/>
+  <circle cx="73" cy="52" r="2.5" fill="#22C55E" filter="url(#glow)"/>
+  <circle cx="57" cy="62" r="2.5" fill="#60a5fa"/>
+  <circle cx="65" cy="62" r="2.5" fill="#60a5fa"/>
+  <circle cx="73" cy="62" r="2.5" fill="#60a5fa"/>
+  <circle cx="65" cy="72" r="2.5" fill="#22C55E" filter="url(#glow)"/>
+
+  <!-- Lock icon -->
+  <rect x="59" y="77" width="12" height="9" rx="2" fill="white" opacity="0.9"/>
+  <path d="M62 77 L62 74 Q65 71 68 74 L68 77" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- CIPHER text -->
+  <text x="108" y="58" font-family="'Arial Black', 'Arial Bold', sans-serif" font-weight="900" font-size="30" fill="white" letter-spacing="1">CIPHER</text>
+
+  <!-- CORE in blue -->
+  <text x="252" y="58" font-family="'Arial Black', 'Arial Bold', sans-serif" font-weight="900" font-size="30" fill="#2563EB" letter-spacing="1">CORE</text>
+
+  <!-- Divider line -->
+  <line x1="108" y1="67" x2="345" y2="67" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+  <!-- ACADEMY subtext -->
+  <text x="108" y="88" font-family="Arial, sans-serif" font-weight="400" font-size="13" fill="rgba(255,255,255,0.45)" letter-spacing="6">ACADEMY</text>
+
+  <!-- Green accent dots -->
+  <circle cx="340" cy="83" r="4" fill="#22C55E" filter="url(#glow)"/>
+  <circle cx="352" cy="83" r="2.5" fill="#22C55E" opacity="0.5"/>
+
+  <!-- Tagline -->
+  <text x="108" y="112" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.25)" letter-spacing="1">LEARN · BUILD · SECURE</text>
+</svg>
