@@ -103,3 +103,51 @@ router.put('/:id/publish', authenticate, requireRole('instructor', 'admin'), asy
 });
 
 module.exports = router;
+
+// Get modules with lessons for a course
+router.get('/:id/modules', async (req, res) => {
+  try {
+    const { rows: modules } = await db.query(
+      'SELECT * FROM course_modules WHERE course_id = $1 ORDER BY order_index',
+      [req.params.id]
+    );
+    for (const mod of modules) {
+      const { rows: lessons } = await db.query(
+        'SELECT * FROM lessons WHERE module_id = $1 ORDER BY order_index',
+        [mod.id]
+      );
+      mod.lessons = lessons;
+    }
+    res.json({ modules });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch modules' });
+  }
+});
+
+// Add module to course
+router.post('/:id/modules', async (req, res) => {
+  const { title, order_index } = req.body;
+  try {
+    const { rows } = await db.query(
+      'INSERT INTO course_modules (course_id, title, order_index) VALUES ($1, $2, $3) RETURNING *',
+      [req.params.id, title, order_index || 0]
+    );
+    res.status(201).json({ module: rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create module' });
+  }
+});
+
+// Add lesson to module
+router.post('/modules/:moduleId/lessons', async (req, res) => {
+  const { title, video_url, duration, order_index, is_preview } = req.body;
+  try {
+    const { rows } = await db.query(
+      'INSERT INTO lessons (module_id, title, video_url, duration, order_index, is_preview) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+      [req.params.moduleId, title, video_url, duration || 0, order_index || 0, is_preview || false]
+    );
+    res.status(201).json({ lesson: rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create lesson' });
+  }
+});
