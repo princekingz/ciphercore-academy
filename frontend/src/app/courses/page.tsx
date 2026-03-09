@@ -41,7 +41,7 @@ function CoursesContent() {
 
   return (
     <>
-      <Navbar dark />
+      <Navbar />
       <div className="pt-16 min-h-screen bg-white">
         <div className="bg-primary py-14">
           <div className="container">

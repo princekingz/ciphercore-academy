@@ -43,7 +43,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Navbar dark />
+      <Navbar />
       <div className="pt-16 min-h-screen bg-slate-50">
         <div className="bg-primary py-10">
           <div className="container flex items-center gap-4">

@@ -15,7 +15,7 @@ const PLANS = [
 export default function PricingPage() {
   return (
     <>
-      <Navbar dark />
+      <Navbar />
       <div className="pt-16">
         <section className="bg-primary py-20 text-center">
           <div className="container max-w-2xl">
