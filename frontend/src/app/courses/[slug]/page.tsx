@@ -314,6 +314,19 @@ const fetchReviews = async () => {
                 )}
               </div>
 
+              {/* Take Exam Button */}
+              {enrolled && (
+                <div className="bg-white rounded-2xl border border-slate-200 p-7 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-heading font-bold text-primary text-lg">Final Exam</h3>
+                    <p className="text-slate-400 text-sm mt-1">Complete all lessons then take the final exam to earn your certificate</p>
+                  </div>
+                  <button onClick={() => router.push(`/courses/${slug}/exam`)} className="btn-primary shrink-0">
+                    Take Exam
+                  </button>
+                </div>
+              )}
+
               {/* Description */}
               <div className="bg-white rounded-2xl border border-slate-200 p-7">
                 <h2 className="font-heading font-bold text-primary text-xl mb-4">About this course</h2>
