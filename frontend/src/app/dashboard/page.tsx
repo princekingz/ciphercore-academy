@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({ name: "", bio: "" });
+  const [badges, setBadges] = useState<any>(null);
 
   useEffect(() => {
     loadUser().then(() => {
@@ -24,8 +25,8 @@ export default function DashboardPage() {
       if (!u) { router.push("/auth/login"); return; }
       setProfile({ name: u.name, bio: u.bio || "" });
     });
-    Promise.all([api.get("/enrollments/my"), api.get("/certificates/my")])
-      .then(([e, c]) => { setEnrollments(e.data.enrollments || []); setCertificates(c.data.certificates || []); })
+    Promise.all([api.get("/enrollments/my"), api.get("/certificates/my"), api.get("/badges/my")])
+      .then(([e, c, b]) => { setEnrollments(e.data.enrollments || []); setCertificates(c.data.certificates || []); setBadges(b.data); })
       .catch(() => {}).finally(() => setLoading(false));
   }, []);
 
@@ -37,6 +38,7 @@ export default function DashboardPage() {
 
   const TABS = [
     { id:"courses", label:"My Courses", icon: BookOpen },
+    { id:"badges", label:"Badges & Level", icon: Award },
     { id:"certificates", label:"Certificates", icon: Award },
     { id:"settings", label:"Settings", icon: Settings },
   ];
@@ -132,8 +134,48 @@ export default function DashboardPage() {
                   }
                 </div>
               )}
-
-              {tab === "certificates" && (
+{tab === "badges" && (
+                <div>
+                  <h2 className="font-heading font-bold text-primary text-lg mb-2">Your Level</h2>
+                  {badges && (
+                    <>
+                      <div className="bg-primary rounded-2xl p-6 mb-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <p className="text-slate-400 text-xs mb-1">Current Level</p>
+                            <p className="font-heading font-black text-white text-2xl">{badges.level.name}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-slate-400 text-xs mb-1">Lessons Completed</p>
+                            <p className="font-heading font-black text-white text-2xl">{badges.lessons}</p>
+                          </div>
+                        </div>
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${badges.progress}%` }} />
+                        </div>
+                        {badges.nextLevel && (
+                          <p className="text-slate-400 text-xs mt-2">{badges.progress}% to {badges.nextLevel.name}</p>
+                        )}
+                      </div>
+                      <h2 className="font-heading font-bold text-primary text-lg mb-4">Your Badges</h2>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {badges.allBadges.map((b: any) => {
+                          const earned = badges.badges.find((eb: any) => eb.id === b.id);
+                          return (
+                            <div key={b.id} className={`bg-white rounded-2xl border p-5 text-center transition-all ${earned ? "border-accent/30 shadow-lg shadow-green-500/5" : "border-slate-100 opacity-40 grayscale"}`}>
+                              <div className="text-4xl mb-2">{b.emoji}</div>
+                              <p className="font-heading font-bold text-primary text-sm mb-1">{b.name}</p>
+                              <p className="text-slate-400 text-xs">{b.description}</p>
+                              {earned && <p className="text-accent text-xs font-heading font-bold mt-2">✓ Earned</p>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}              
+{tab === "certificates" && (
                 <div>
                   <h2 className="font-heading font-bold text-primary text-lg mb-4">My Certificates</h2>
                   {certificates.length === 0 ? (
