@@ -119,6 +119,38 @@ const runMigrations = async () => {
         used BOOLEAN DEFAULT false,
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
+CREATE TABLE IF NOT EXISTS exams (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+        title VARCHAR(255) NOT NULL,
+        pass_mark INTEGER DEFAULT 70,
+        total_questions INTEGER DEFAULT 20,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        UNIQUE(course_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS exam_questions (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        exam_id UUID REFERENCES exams(id) ON DELETE CASCADE,
+        question TEXT NOT NULL,
+        option_a TEXT NOT NULL,
+        option_b TEXT NOT NULL,
+        option_c TEXT NOT NULL,
+        option_d TEXT NOT NULL,
+        correct_answer VARCHAR(1) NOT NULL,
+        order_index INTEGER DEFAULT 0
+      );
+
+      CREATE TABLE IF NOT EXISTS exam_results (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        exam_id UUID REFERENCES exams(id) ON DELETE CASCADE,
+        score INTEGER NOT NULL,
+        passed BOOLEAN DEFAULT false,
+        answers JSONB,
+        taken_at TIMESTAMPTZ DEFAULT NOW(),
+        UNIQUE(user_id, exam_id)
+      );
     `);
     console.log('Migrations complete');
   } finally {

@@ -33,6 +33,7 @@ app.use('/api/enrollments', require('./routes/enrollments'));
 app.use('/api/certificates', require('./routes/certificates'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/badges', require('./routes/badges'));
+app.use('/api/exams', require('./routes/exams'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/instructor', require('./routes/instructor'));
 app.use('/api/admin', require('./routes/admin'));
