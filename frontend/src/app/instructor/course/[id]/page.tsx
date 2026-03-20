@@ -43,7 +43,7 @@ const [newQuestion, setNewQuestion] = useState({ question: "", option_a: "", opt
 
 const createExam = async () => {
     try {
-      const { data } = await api.post(`/exams/course/${courseId}/create`, { title: "Final Exam" });
+      const { data } = await api.post(`/exams/course/${id}/create`, { title: "Final Exam" });
       setExam(data.exam);
       toast.success("Exam created!");
     } catch { toast.error("Failed to create exam"); }
