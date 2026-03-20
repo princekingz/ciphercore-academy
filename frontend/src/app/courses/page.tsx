@@ -37,16 +37,25 @@ function CoursesContent() {
     }
   };
 
-  useEffect(() => { fetch(); }, [category, level, page]);
+  useEffect(() => { fetch(); }, [category, level, page, search]);
 
   return (
     <>
       <Navbar />
-      <div className="pt-16 min-h-screen bg-white">
+     <div className="pt-16 min-h-screen bg-white">
         <div className="bg-primary py-14">
           <div className="container">
             <h1 className="text-4xl font-heading font-black text-white mb-2">Browse Courses</h1>
-            <p className="text-slate-400">{total || "110+"} courses across 5 disciplines</p>
+            <p className="text-slate-400 mb-6">{total || "110+"} courses across 5 disciplines</p>
+            <div className="relative max-w-lg">
+              <input
+                value={search}
+                onChange={e => { setSearch(e.target.value); setPage(1); }}
+                placeholder="Search courses..."
+                className="w-full px-5 py-3 rounded-xl text-primary font-heading text-sm outline-none pr-12"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+            </div>
           </div>
         </div>
 
