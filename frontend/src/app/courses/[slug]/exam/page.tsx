@@ -30,7 +30,7 @@ export default function ExamPage() {
 
   const fetchData = async () => {
     try {
-      const { data: courseData } = await api.get(`/courses/slug/${slug}`);
+      const { data: courseData } = await api.get(`/courses/${slug}`);
       setCourse(courseData.course);
       const { data: examData } = await api.get(`/exams/course/${courseData.course.id}`);
       setExam(examData.exam);
