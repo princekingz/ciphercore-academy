@@ -39,6 +39,7 @@ export default function DashboardPage() {
 
   const TABS = [
     { id:"courses", label:"My Courses", icon: BookOpen },
+    { id:"sessions", label:"Live Sessions", icon: BookOpen },
     { id:"badges", label:"Badges & Level", icon: Award },
     { id:"certificates", label:"Certificates", icon: Award },
     { id:"settings", label:"Settings", icon: Settings },
