@@ -19,6 +19,9 @@ export default function ManageCoursePage() {
   const [addingModule, setAddingModule] = useState(false);
   const [exam, setExam] = useState<any>(null);
 const [examQuestions, setExamQuestions] = useState<any[]>([]);
+const [sessions, setSessions] = useState<any[]>([]);
+const [newSession, setNewSession] = useState({ title: "", meet_link: "", scheduled_at: "", duration_minutes: 60, description: "" });
+const [addingSession, setAddingSession] = useState(false);
 const [newQuestion, setNewQuestion] = useState({ question: "", option_a: "", option_b: "", option_c: "", option_d: "", correct_answer: "a" });
   const [newLesson, setNewLesson] = useState({ title: "", video_url: "", duration: 0, is_preview: false });
   const [addingLessonTo, setAddingLessonTo] = useState<string | null>(null);
@@ -36,11 +39,39 @@ const [newQuestion, setNewQuestion] = useState({ question: "", option_a: "", opt
         setExam(examData.exam);
         const { data: qData } = await api.get(`/exams/exam/${examData.exam.id}/questions`);
         setExamQuestions(qData.questions || []);
+        fetchSessions();
       }
     } catch { toast.error("Failed to load course"); }
     finally { setLoading(false); }
   };
 
+const fetchSessions = async () => {
+    try {
+      const { data } = await api.get(`/live-sessions/course/${id}`);
+      setSessions(data.sessions || []);
+    } catch {}
+  };
+
+  const createSession = async () => {
+    if (!newSession.title || !newSession.meet_link || !newSession.scheduled_at) {
+      toast.error("Fill in title, meet link and date!"); return;
+    }
+    try {
+      const { data } = await api.post(`/live-sessions/course/${id}`, newSession);
+      setSessions([...sessions, data.session]);
+      setNewSession({ title: "", meet_link: "", scheduled_at: "", duration_minutes: 60, description: "" });
+      setAddingSession(false);
+      toast.success("Session scheduled!");
+    } catch { toast.error("Failed to schedule session"); }
+  };
+
+  const deleteSession = async (sessionId: string) => {
+    try {
+      await api.delete(`/live-sessions/${sessionId}`);
+      setSessions(sessions.filter((s: any) => s.id !== sessionId));
+      toast.success("Session deleted!");
+    } catch { toast.error("Failed to delete session"); }
+  };
 const createExam = async () => {
     try {
       const { data } = await api.post(`/exams/course/${id}/create`, { title: "Final Exam" });
@@ -197,7 +228,51 @@ const addModule = async () => {
           )}
         </div>
       </div>
-
+       
+      {/* Live Sessions */}
+      <div className="mt-8 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-heading font-bold text-primary text-xl">Live Sessions</h2>
+          <button onClick={() => setAddingSession(true)} className="btn-primary text-sm py-2 px-4">+ Schedule Session</button>
+        </div>
+        {addingSession && (
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 mb-4">
+            <p className="font-heading font-semibold text-primary">New Live Session</p>
+            <input value={newSession.title} onChange={e => setNewSession({...newSession, title: e.target.value})}
+              placeholder="Session title e.g. Introduction to Networking" className="input w-full"/>
+            <input value={newSession.meet_link} onChange={e => setNewSession({...newSession, meet_link: e.target.value})}
+              placeholder="Google Meet link e.g. https://meet.google.com/abc-defg-hij" className="input w-full"/>
+            <input type="datetime-local" value={newSession.scheduled_at} onChange={e => setNewSession({...newSession, scheduled_at: e.target.value})}
+              className="input w-full"/>
+            <input type="number" value={newSession.duration_minutes} onChange={e => setNewSession({...newSession, duration_minutes: parseInt(e.target.value)})}
+              placeholder="Duration in minutes" className="input w-full"/>
+            <textarea value={newSession.description} onChange={e => setNewSession({...newSession, description: e.target.value})}
+              placeholder="Session description (optional)" className="input w-full resize-none" rows={2}/>
+            <div className="flex gap-2">
+              <button onClick={createSession} className="btn-primary text-sm py-2 px-4">Save Session</button>
+              <button onClick={() => setAddingSession(false)} className="text-sm text-slate-400 hover:text-slate-600 px-4">Cancel</button>
+            </div>
+          </div>
+        )}
+        {sessions.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+            <p className="text-slate-400 text-sm">No live sessions scheduled yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {sessions.map((s: any) => (
+              <div key={s.id} className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between">
+                <div>
+                  <p className="font-heading font-bold text-primary">{s.title}</p>
+                  <p className="text-slate-400 text-xs mt-1">{new Date(s.scheduled_at).toLocaleString()} · {s.duration_minutes} mins</p>
+                  <a href={s.meet_link} target="_blank" className="text-secondary text-xs hover:underline">{s.meet_link}</a>
+                </div>
+                <button onClick={() => deleteSession(s.id)} className="text-red-400 hover:text-red-600 text-xs">Delete</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       {/* Exam Builder */}
       <div className="mt-8">
         <h2 className="font-heading font-bold text-primary text-xl mb-4">Final Exam</h2>
