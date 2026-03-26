@@ -151,6 +151,24 @@ CREATE TABLE IF NOT EXISTS exams (
         taken_at TIMESTAMPTZ DEFAULT NOW(),
         UNIQUE(user_id, exam_id)
       );
+     CREATE TABLE IF NOT EXISTS live_sessions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  meet_link TEXT NOT NULL,
+  scheduled_at TIMESTAMPTZ NOT NULL,
+  duration_minutes INTEGER DEFAULT 60,
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS attendance (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  session_id UUID REFERENCES live_sessions(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  attended_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(session_id, user_id)
+);
     `);
     console.log('Migrations complete');
   } finally {
