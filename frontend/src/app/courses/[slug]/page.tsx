@@ -36,6 +36,7 @@ export default function CourseDetailPage() {
   const [showPayment, setShowPayment] = useState(false);
   const [phone, setPhone] = useState("");
 const [reviews, setReviews] = useState<any[]>([]);
+const [sessions, setSessions] = useState<any[]>([]);
 const [newRating, setNewRating] = useState(0);
 const [newComment, setNewComment] = useState("");
 
@@ -45,7 +46,7 @@ const [newComment, setNewComment] = useState("");
   }, [slug]);
 
   useEffect(() => {
-    if (user && course) { checkEnrollment(); fetchReviews(); }
+    if (user && course) { checkEnrollment(); fetchReviews(); fetchSessions(); }
   }, [user, course]);
 
   const fetchCourse = async () => {
@@ -76,6 +77,12 @@ const fetchReviews = async () => {
     try {
       const { data } = await api.get(`/reviews/course/${course?.id}`);
       setReviews(data.reviews || []);
+    } catch {}
+  };
+ const fetchSessions = async () => {
+    try {
+      const { data } = await api.get(`/live-sessions/course/${course?.id}`);
+      setSessions(data.sessions || []);
     } catch {}
   };
 
@@ -313,7 +320,42 @@ const fetchReviews = async () => {
                   </div>
                 )}
               </div>
-
+             
+              {/* Live Sessions */}
+              {enrolled && sessions.length > 0 && (
+                <div className="bg-white rounded-2xl border border-slate-200 p-7">
+                  <h2 className="font-heading font-bold text-primary text-xl mb-4">📅 Live Sessions</h2>
+                  <div className="space-y-3">
+                    {sessions.map((s: any) => {
+                      const sessionDate = new Date(s.scheduled_at);
+                      const now = new Date();
+                      const isLive = now >= sessionDate && now <= new Date(sessionDate.getTime() + s.duration_minutes * 60000);
+                      const isPast = now > new Date(sessionDate.getTime() + s.duration_minutes * 60000);
+                      return (
+                        <div key={s.id} className={`rounded-xl border p-4 flex items-center justify-between ${isLive ? "border-accent bg-accent/5" : "border-slate-200"}`}>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              {isLive && <span className="text-xs font-heading font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full animate-pulse">🔴 LIVE NOW</span>}
+                              {isPast && <span className="text-xs font-heading font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Ended</span>}
+                              {!isLive && !isPast && <span className="text-xs font-heading font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">Upcoming</span>}
+                              <p className="font-heading font-bold text-primary text-sm">{s.title}</p>
+                            </div>
+                            <p className="text-slate-400 text-xs">{sessionDate.toLocaleString()} · {s.duration_minutes} mins</p>
+                            {s.description && <p className="text-slate-500 text-xs mt-1">{s.description}</p>}
+                          </div>
+                          {!isPast && (
+                            <a href={s.meet_link} target="_blank"
+                              onClick={async () => { try { await api.post(`/live-sessions/${s.id}/attend`); } catch {} }}
+                              className={`text-sm font-heading font-bold px-4 py-2 rounded-xl shrink-0 ml-4 ${isLive ? "bg-accent text-white" : "bg-secondary text-white"}`}>
+                              {isLive ? "Join Now" : "Join"}
+                            </a>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               {/* Take Exam Button */}
               {enrolled && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-7 flex items-center justify-between">
