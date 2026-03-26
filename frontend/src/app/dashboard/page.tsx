@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({ name: "", bio: "" });
   const [badges, setBadges] = useState<any>(null);
+  const [upcomingSessions, setUpcomingSessions] = useState<any[]>([]);
 
   useEffect(() => {
     loadUser().then(() => {
@@ -25,11 +26,11 @@ export default function DashboardPage() {
       if (!u) { router.push("/auth/login"); return; }
       setProfile({ name: u.name, bio: u.bio || "" });
     });
-    Promise.all([api.get("/enrollments/my"), api.get("/certificates/my"), api.get("/badges/my")])
-      .then(([e, c, b]) => { setEnrollments(e.data.enrollments || []); setCertificates(c.data.certificates || []); setBadges(b.data); })
+    
+       Promise.all([api.get("/enrollments/my"), api.get("/certificates/my"), api.get("/badges/my"), api.get("/live-sessions/upcoming")])
+      .then(([e, c, b, s]) => { setEnrollments(e.data.enrollments || []); setCertificates(c.data.certificates || []); setBadges(b.data); setUpcomingSessions(s.data.sessions || []); })
       .catch(() => {}).finally(() => setLoading(false));
   }, []);
-
   if (!user) return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
@@ -134,6 +135,34 @@ export default function DashboardPage() {
                   }
                 </div>
               )}
+{upcomingSessions.length > 0 && tab === "courses" && (
+                <div className="mb-6 bg-white rounded-2xl border border-slate-200 p-6">
+                  <h2 className="font-heading font-bold text-primary text-lg mb-4">📅 Upcoming Live Sessions</h2>
+                  <div className="space-y-3">
+                    {upcomingSessions.map((s: any) => {
+                      const sessionDate = new Date(s.scheduled_at);
+                      const now = new Date();
+                      const isLive = now >= sessionDate && now <= new Date(sessionDate.getTime() + s.duration_minutes * 60000);
+                      return (
+                        <div key={s.id} className={`rounded-xl border p-4 flex items-center justify-between ${isLive ? "border-accent bg-accent/5" : "border-slate-100"}`}>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              {isLive && <span className="text-xs font-heading font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full animate-pulse">🔴 LIVE NOW</span>}
+                              <p className="font-heading font-bold text-primary text-sm">{s.title}</p>
+                            </div>
+                            <p className="text-slate-400 text-xs">{s.course_title} · {sessionDate.toLocaleString()}</p>
+                          </div>
+                          <a href={s.meet_link} target="_blank"
+                            className={`text-sm font-heading font-bold px-4 py-2 rounded-xl shrink-0 ml-4 ${isLive ? "bg-accent text-white" : "bg-secondary text-white"}`}>
+                            {isLive ? "Join Now" : "Join"}
+                          </a>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
 {tab === "badges" && (
                 <div>
                   <h2 className="font-heading font-bold text-primary text-lg mb-2">Your Level</h2>
