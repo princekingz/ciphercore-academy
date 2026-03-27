@@ -130,7 +130,6 @@ export default function AdminPage() {
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs">{new Date(p.created_at).toLocaleDateString()}</td>
                     </tr>
-                  ))}
                ))}
                   {tab === "courses" && courses.map((c: any) => (
                     <tr key={c.id} className="hover:bg-slate-50">
