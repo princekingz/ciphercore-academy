@@ -38,6 +38,8 @@ const runMigrations = async () => {
         requirements TEXT[],
         status VARCHAR(50) DEFAULT 'draft',
         is_featured BOOLEAN DEFAULT false,
+        is_locked BOOLEAN DEFAULT false,
+        next_intake VARCHAR(100),
         instructor_id UUID REFERENCES users(id),
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()

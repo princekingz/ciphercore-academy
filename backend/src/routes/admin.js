@@ -23,6 +23,20 @@ router.patch('/users/:id/role', authenticate, requireRole('admin'), async (req, 
   res.json({ user: rows[0] });
 });
 
+router.patch('/courses/:id', authenticate, requireRole('admin'), async (req, res) => {
+  try {
+    const { is_locked, next_intake } = req.body;
+    const updates = [];
+    const values = [];
+    let i = 1;
+    if (is_locked !== undefined) { updates.push(`is_locked=$${i++}`); values.push(is_locked); }
+    if (next_intake !== undefined) { updates.push(`next_intake=$${i++}`); values.push(next_intake); }
+    values.push(req.params.id);
+    await db.query(`UPDATE courses SET ${updates.join(',')} WHERE id=$${i}`, values);
+    res.json({ success: true });
+  } catch { res.status(500).json({ error: 'Failed to update course' }); }
+});
+
 router.get('/payments', authenticate, requireRole('admin'), async (req, res) => {
   const { rows } = await db.query(
     `SELECT p.*, u.name as user_name, u.email, c.title as course_title FROM payments p JOIN users u ON p.user_id=u.id JOIN courses c ON p.course_id=c.id ORDER BY p.created_at DESC LIMIT 100`

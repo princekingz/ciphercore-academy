@@ -13,6 +13,7 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [tab, setTab] = useState("users");
 
   useEffect(() => {
@@ -21,14 +22,17 @@ export default function AdminPage() {
       if (!u) { router.push("/auth/login"); return; }
       if (u.role !== "admin") { router.push("/dashboard"); return; }
     });
-    Promise.all([
+   
+  Promise.all([
       api.get("/admin/stats"),
       api.get("/admin/users"),
       api.get("/admin/payments"),
-    ]).then(([s, u, p]) => {
+      api.get("/courses"),
+    ]).then(([s, u, p, c]) => {
       setStats(s.data.stats);
       setUsers(u.data.users || []);
       setPayments(p.data.payments || []);
+      setCourses(c.data.courses || []);
     }).catch(() => {});
   }, []);
 
@@ -65,8 +69,8 @@ export default function AdminPage() {
             ))}
           </div>
 
-          <div className="flex gap-1 bg-white rounded-xl p-1 border border-slate-200 mb-6 w-fit">
-            {["users", "payments"].map(t => (
+         <div className="flex gap-1 bg-white rounded-xl p-1 border border-slate-200 mb-6 w-fit">
+            {["users", "payments", "courses"].map(t => (
               <button key={t} onClick={() => setTab(t)}
                 className={`px-5 py-2.5 rounded-lg text-sm font-heading font-semibold capitalize transition-all ${tab === t ? "bg-primary text-white" : "text-slate-600"}`}>
                 {t}
@@ -81,11 +85,14 @@ export default function AdminPage() {
                   <tr>
                     {(tab === "users"
                       ? ["Name", "Email", "Role", "Joined"]
-                      : ["Student", "Course", "Amount", "Method", "Status", "Date"]
+                      : tab === "payments"
+                      ? ["Student", "Course", "Amount", "Method", "Status", "Date"]
+                      : ["Course", "Category", "Status", "Next Intake", "Action"]
                     ).map(h => (
                       <th key={h} className="px-5 py-3 text-left text-xs font-heading font-semibold text-slate-600">{h}</th>
                     ))}
                   </tr>
+
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {tab === "users" && users.map((u: any) => (
@@ -122,6 +129,44 @@ export default function AdminPage() {
                         <span className={`tag ${p.status === "completed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{p.status}</span>
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs">{new Date(p.created_at).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+               ))}
+                  {tab === "courses" && courses.map((c: any) => (
+                    <tr key={c.id} className="hover:bg-slate-50">
+                      <td className="px-5 py-4 font-medium text-primary text-sm">{c.title}</td>
+                      <td className="px-5 py-4 text-slate-500 text-sm">{c.category}</td>
+                      <td className="px-5 py-4">
+                        <span className={`tag ${c.is_locked ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+                          {c.is_locked ? "Locked" : "Open"}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4">
+                        <input
+                          defaultValue={c.next_intake || ""}
+                          onBlur={async (e) => {
+                            try {
+                              await api.patch(`/admin/courses/${c.id}`, { next_intake: e.target.value });
+                              toast.success("Updated!");
+                            } catch { toast.error("Failed to update"); }
+                          }}
+                          placeholder="e.g. June 2026"
+                          className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 outline-none w-32"
+                        />
+                      </td>
+                      <td className="px-5 py-4">
+                        <button
+                          onClick={async () => {
+                            try {
+                              await api.patch(`/admin/courses/${c.id}`, { is_locked: !c.is_locked });
+                              setCourses(courses.map((course: any) => course.id === c.id ? { ...course, is_locked: !c.is_locked } : course));
+                              toast.success(c.is_locked ? "Course unlocked!" : "Course locked!");
+                            } catch { toast.error("Failed to update"); }
+                          }}
+                          className={`text-sm font-heading font-bold px-4 py-1.5 rounded-xl transition-all ${c.is_locked ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-red-100 text-red-700 hover:bg-red-200"}`}>
+                          {c.is_locked ? "Unlock" : "Lock"}
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
