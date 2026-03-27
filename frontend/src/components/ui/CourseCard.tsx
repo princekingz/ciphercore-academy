@@ -24,6 +24,7 @@ interface Course {
   price: number; original_price?: number;
   instructor_name: string; enrollment_count: number;
   avg_rating: number; review_count: number;
+  is_locked?: boolean; next_intake?: string;
 }
 
 export default function CourseCard({ course }: { course: Course }) {
