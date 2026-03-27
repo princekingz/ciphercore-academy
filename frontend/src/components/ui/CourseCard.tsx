@@ -34,6 +34,17 @@ export default function CourseCard({ course }: { course: Course }) {
   return (
     <Link href={`/courses/${course.slug}`} className="card group flex flex-col">
       <div className="relative h-44 overflow-hidden bg-slate-100">
+      {course.is_locked && (
+          <div className="absolute inset-0 z-10 bg-primary/80 backdrop-blur-sm flex flex-col items-center justify-center text-center px-4">
+            <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <p className="font-heading font-black text-white text-sm">Enrollment Closed</p>
+            {course.next_intake && <p className="text-white/70 text-xs mt-1">Next Intake: {course.next_intake}</p>}
+          </div>
+        )}
         <Image src={photo} alt={course.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         <span className={`absolute top-3 left-3 tag ${LEVEL_COLOR[course.level] || "bg-slate-100 text-slate-700"}`}>
