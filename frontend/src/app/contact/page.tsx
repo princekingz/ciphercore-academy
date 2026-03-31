@@ -34,8 +34,8 @@ export default function ContactPage() {
             <div className="grid lg:grid-cols-3 gap-10">
               <div className="space-y-4">
                 {[
-                  { icon: Mail, label:"Email", value:"hello@ciphercoreacademy.com" },
-                  { icon: Phone, label:"Phone", value:"+254 700 000 000" },
+                  { icon: Mail, label:"Email", value:"ciphercoreacademy@gmail.com" },
+                  { icon: Phone, label:"Phone", value:"" },
                   { icon: MapPin, label:"Location", value:"Nairobi, Kenya" },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="bg-slate-50 rounded-2xl p-5 flex gap-4">

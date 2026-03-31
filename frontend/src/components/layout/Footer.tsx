@@ -52,8 +52,8 @@ export default function Footer() {
             <p className="text-white font-heading font-semibold text-sm mb-4">Contact</p>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2.5"><MapPin className="w-4 h-4 text-accent shrink-0" />Nairobi, Kenya</li>
-              <li className="flex items-center gap-2.5"><Mail className="w-4 h-4 text-accent shrink-0" />hello@ciphercoreacademy.com</li>
-              <li className="flex items-center gap-2.5"><Phone className="w-4 h-4 text-accent shrink-0" />+254 700 000 000</li>
+              <li className="flex items-center gap-2.5"><Mail className="w-4 h-4 text-accent shrink-0" />ciphercoreacademy@gmail.com</li>
+              <li className="flex items-center gap-2.5"><Phone className="w-4 h-4 text-accent shrink-0" /></li>
             </ul>
           </div>
         </div>
