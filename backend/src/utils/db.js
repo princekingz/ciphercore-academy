@@ -171,6 +171,16 @@ CREATE TABLE IF NOT EXISTS attendance (
   attended_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(session_id, user_id)
 );
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  code VARCHAR(50) UNIQUE NOT NULL,
+  discount_percent INTEGER NOT NULL,
+  expires_at TIMESTAMPTZ,
+  used_by UUID REFERENCES users(id),
+  used_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
     `);
     console.log('Migrations complete');
   } finally {
