@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -7,6 +6,7 @@ import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
 import { Users, BookOpen, DollarSign, TrendingUp, Shield } from "lucide-react";
 import toast from "react-hot-toast";
+
 export default function AdminPage() {
   const { user, loadUser } = useAuthStore();
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function AdminPage() {
   const [payments, setPayments] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
   const [coupons, setCoupons] = useState<any[]>([]);
-const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", expires_at: "" });
+  const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", expires_at: "" });
   const [tab, setTab] = useState("users");
 
   useEffect(() => {
@@ -24,8 +24,7 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
       if (!u) { router.push("/auth/login"); return; }
       if (u.role !== "admin") { router.push("/dashboard"); return; }
     });
-   
-  Promise.all([
+    Promise.all([
       api.get("/admin/stats"),
       api.get("/admin/users"),
       api.get("/admin/payments"),
@@ -73,7 +72,7 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
             ))}
           </div>
 
-         <div className="flex gap-1 bg-white rounded-xl p-1 border border-slate-200 mb-6 w-fit">
+          <div className="flex gap-1 bg-white rounded-xl p-1 border border-slate-200 mb-6 w-fit">
             {["users", "payments", "courses", "coupons"].map(t => (
               <button key={t} onClick={() => setTab(t)}
                 className={`px-5 py-2.5 rounded-lg text-sm font-heading font-semibold capitalize transition-all ${tab === t ? "bg-primary text-white" : "text-slate-600"}`}>
@@ -86,7 +85,7 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 border-b border-slate-200">
-                 <tr>
+                  <tr>
                     {(tab === "users"
                       ? ["Name", "Email", "Role", "Joined"]
                       : tab === "payments"
@@ -98,7 +97,6 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
                       <th key={h} className="px-5 py-3 text-left text-xs font-heading font-semibold text-slate-600">{h}</th>
                     ))}
                   </tr>
-
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {tab === "users" && users.map((u: any) => (
@@ -136,7 +134,7 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs">{new Date(p.created_at).toLocaleDateString()}</td>
                     </tr>
-               ))}
+                  ))}
                   {tab === "courses" && courses.map((c: any) => (
                     <tr key={c.id} className="hover:bg-slate-50">
                       <td className="px-5 py-4 font-medium text-primary text-sm">{c.title}</td>
@@ -174,9 +172,6 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              
-                ))}
                   {tab === "coupons" && coupons.map((c: any) => (
                     <tr key={c.id} className="hover:bg-slate-50">
                       <td className="px-5 py-4 font-heading font-bold text-primary text-sm">{c.code}</td>
@@ -230,14 +225,6 @@ const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", exp
               </div>
             </div>
           )}
-        </div>
-      </div>
-    </>
-  );
-}               
-              </table>
-            </div>
-          </div>
         </div>
       </div>
     </>
