@@ -41,14 +41,8 @@ export default function Navbar() {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 bg-secondary rounded-xl flex items-center justify-center shadow-md shadow-blue-500/20">
-            <Shield className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className={`font-heading font-bold text-[15px] leading-none ${isDark && !scrolled ? "text-white" : "text-primary"}`}>CipherCore</p>
-            <p className="text-accent text-[9px] font-heading font-semibold uppercase tracking-widest leading-none mt-0.5">Academy</p>
-          </div>
+       <Link href="/" className="flex items-center gap-2.5 group">
+          <img src="/ciphercore_logo.png" alt="CipherCore Academy" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop nav */}
