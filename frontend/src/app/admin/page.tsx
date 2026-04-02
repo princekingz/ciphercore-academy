@@ -14,6 +14,8 @@ export default function AdminPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<any[]>([]);
+const [newCoupon, setNewCoupon] = useState({ code: "", discount_percent: "", expires_at: "" });
   const [tab, setTab] = useState("users");
 
   useEffect(() => {
@@ -28,11 +30,13 @@ export default function AdminPage() {
       api.get("/admin/users"),
       api.get("/admin/payments"),
       api.get("/courses"),
-    ]).then(([s, u, p, c]) => {
+      api.get("/coupons"),
+    ]).then(([s, u, p, c, co]) => {
       setStats(s.data.stats);
       setUsers(u.data.users || []);
       setPayments(p.data.payments || []);
       setCourses(c.data.courses || []);
+      setCoupons(co.data.coupons || []);
     }).catch(() => {});
   }, []);
 
@@ -70,7 +74,7 @@ export default function AdminPage() {
           </div>
 
          <div className="flex gap-1 bg-white rounded-xl p-1 border border-slate-200 mb-6 w-fit">
-            {["users", "payments", "courses"].map(t => (
+            {["users", "payments", "courses", "coupons"].map(t => (
               <button key={t} onClick={() => setTab(t)}
                 className={`px-5 py-2.5 rounded-lg text-sm font-heading font-semibold capitalize transition-all ${tab === t ? "bg-primary text-white" : "text-slate-600"}`}>
                 {t}
@@ -82,12 +86,14 @@ export default function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
+                 <tr>
                     {(tab === "users"
                       ? ["Name", "Email", "Role", "Joined"]
                       : tab === "payments"
                       ? ["Student", "Course", "Amount", "Method", "Status", "Date"]
-                      : ["Course", "Category", "Status", "Next Intake", "Action"]
+                      : tab === "courses"
+                      ? ["Course", "Category", "Status", "Next Intake", "Action"]
+                      : ["Code", "Discount", "Expires", "Status", "Action"]
                     ).map(h => (
                       <th key={h} className="px-5 py-3 text-left text-xs font-heading font-semibold text-slate-600">{h}</th>
                     ))}
@@ -169,6 +175,66 @@ export default function AdminPage() {
                     </tr>
                   ))}
                 </tbody>
+              
+                ))}
+                  {tab === "coupons" && coupons.map((c: any) => (
+                    <tr key={c.id} className="hover:bg-slate-50">
+                      <td className="px-5 py-4 font-heading font-bold text-primary text-sm">{c.code}</td>
+                      <td className="px-5 py-4"><span className="tag bg-blue-100 text-blue-700">{c.discount_percent}% OFF</span></td>
+                      <td className="px-5 py-4 text-slate-500 text-sm">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "No expiry"}</td>
+                      <td className="px-5 py-4">
+                        {c.used_by ? (
+                          <div>
+                            <p className="text-xs font-heading font-bold text-red-500">Used</p>
+                            <p className="text-xs text-slate-400">{c.used_by_name}</p>
+                          </div>
+                        ) : (
+                          <span className="tag bg-green-100 text-green-700">Available</span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4">
+                        <button onClick={async () => {
+                          try {
+                            await api.delete(`/coupons/${c.id}`);
+                            setCoupons(coupons.filter((cp: any) => cp.id !== c.id));
+                            toast.success("Coupon deleted!");
+                          } catch { toast.error("Failed to delete"); }
+                        }} className="text-red-400 hover:text-red-600 text-xs font-heading font-bold">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {tab === "coupons" && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 mt-4">
+              <p className="font-heading font-bold text-primary mb-4">Create New Coupon</p>
+              <div className="flex gap-3 flex-wrap">
+                <input value={newCoupon.code} onChange={e => setNewCoupon({...newCoupon, code: e.target.value.toUpperCase()})}
+                  placeholder="Coupon code e.g. CYBER50" className="input flex-1 min-w-40"/>
+                <input type="number" value={newCoupon.discount_percent} onChange={e => setNewCoupon({...newCoupon, discount_percent: e.target.value})}
+                  placeholder="Discount %" className="input w-32"/>
+                <input type="date" value={newCoupon.expires_at} onChange={e => setNewCoupon({...newCoupon, expires_at: e.target.value})}
+                  className="input w-40"/>
+                <button onClick={async () => {
+                  if (!newCoupon.code || !newCoupon.discount_percent) { toast.error("Enter code and discount!"); return; }
+                  try {
+                    const { data } = await api.post("/coupons", newCoupon);
+                    setCoupons([data.coupon, ...coupons]);
+                    setNewCoupon({ code: "", discount_percent: "", expires_at: "" });
+                    toast.success("Coupon created!");
+                  } catch (err: any) { toast.error(err.response?.data?.error || "Failed to create coupon"); }
+                }} className="btn-primary">Create</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}               
               </table>
             </div>
           </div>
