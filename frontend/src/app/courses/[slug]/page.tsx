@@ -35,6 +35,9 @@ export default function CourseDetailPage() {
   const [modules, setModules] = useState<any[]>([]);
   const [showPayment, setShowPayment] = useState(false);
   const [phone, setPhone] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+const [couponDiscount, setCouponDiscount] = useState(0);
+const [couponApplied, setCouponApplied] = useState(false);
 const [reviews, setReviews] = useState<any[]>([]);
 const [sessions, setSessions] = useState<any[]>([]);
 const [newRating, setNewRating] = useState(0);
@@ -240,6 +243,25 @@ const fetchReviews = async () => {
                         
                         ) : (
                           <div className="space-y-3">
+
+                            <div className="space-y-2 mb-3">
+                              <div className="flex gap-2">
+                                <input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                                  placeholder="Coupon code" className="input text-sm flex-1"/>
+                                <button onClick={async () => {
+                                  if (!couponCode) return;
+                                  try {
+                                    const { data } = await api.post("/coupons/validate", { code: couponCode });
+                                    setCouponDiscount(data.discount_percent);
+                                    setCouponApplied(true);
+                                    toast.success(`${data.discount_percent}% discount applied!`);
+                                  } catch (err: any) { toast.error(err.response?.data?.error || "Invalid coupon"); }
+                                }} className="btn-primary text-sm py-2 px-4">Apply</button>
+                              </div>
+                              {couponApplied && (
+                                <p className="text-accent text-xs font-heading font-bold">✓ {couponDiscount}% discount applied!</p>
+                              )}
+                            </div>
                             <p className="font-heading font-bold text-primary text-sm">Pay with M-Pesa</p>
                             <input
                               type="tel" value={phone} onChange={e => setPhone(e.target.value)}
@@ -247,7 +269,7 @@ const fetchReviews = async () => {
                             />
                             <button onClick={handleMpesa} disabled={enrolling}
                               className="w-full py-3.5 bg-accent text-white rounded-xl font-heading font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-60">
-                              {enrolling ? "Sending prompt..." : "Pay KSh " + parseInt(course.price).toLocaleString()}
+                              {enrolling ? "Sending prompt..." : "Pay KSh " + parseInt(String(course.price * (1 - couponDiscount / 100))).toLocaleString()}
                             </button>
                             <button onClick={() => setShowPayment(false)} className="w-full text-slate-400 text-xs hover:text-slate-600 transition-colors">
                               Cancel
