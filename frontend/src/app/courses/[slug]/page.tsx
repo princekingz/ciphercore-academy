@@ -38,6 +38,9 @@ export default function CourseDetailPage() {
   const [couponCode, setCouponCode] = useState("");
 const [couponDiscount, setCouponDiscount] = useState(0);
 const [couponApplied, setCouponApplied] = useState(false);
+const [reserveName, setReserveName] = useState("");
+const [reserveEmail, setReserveEmail] = useState("");
+const [reservePhone, setReservePhone] = useState("");
 const [reviews, setReviews] = useState<any[]>([]);
 const [sessions, setSessions] = useState<any[]>([]);
 const [newRating, setNewRating] = useState(0);
