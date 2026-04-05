@@ -219,6 +219,9 @@ export default function Home() {
                     { icon: "📱", title: "Pay with M-Pesa", desc: "No dollar card required. Pay easily with Safaricom M-Pesa or card." },
                     { icon: "💼", title: "Job-Ready Portfolio Projects", desc: "Every course ends with a real project you can show to employers." },
                     { icon: "🤝", title: "Mentorship & Community", desc: "Join 12,000+ students on Discord. Get matched with an industry mentor." },
+                    { icon: "📅", title: "Flexible Intakes", desc: "New cohorts start every quarter. April 2026 intake is now open — reserve your spot today." },
+{ icon: "💻", title: "Online & Hybrid Learning", desc: "Learn from anywhere in Africa. Live sessions on Google Meet with recorded replays." },                
+
                   ].map(({ icon, title, desc }) => (
                     <div key={title} className="flex gap-4">
                       <div className="w-11 h-11 bg-white/5 rounded-xl flex items-center justify-center text-xl shrink-0">{icon}</div>
