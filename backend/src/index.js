@@ -37,6 +37,7 @@ app.use('/api/exams', require('./routes/exams'));
 app.use('/api/live-sessions', require('./routes/live-sessions'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/coupons', require('./routes/coupons'));
+app.use('/api/reservations', require('./routes/reservations'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/instructor', require('./routes/instructor'));
 app.use('/api/admin', require('./routes/admin'));

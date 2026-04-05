@@ -181,6 +181,17 @@ CREATE TABLE IF NOT EXISTS coupons (
   used_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS reservations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(course_id, email)
+);
+
     `);
     console.log('Migrations complete');
   } finally {

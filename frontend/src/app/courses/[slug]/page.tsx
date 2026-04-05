@@ -235,6 +235,24 @@ const fetchReviews = async () => {
                         <p className="font-heading font-black text-white text-lg">Enrollment Closed</p>
                         <p className="text-white/60 text-sm mt-1">Classes are currently in progress.</p>
                         {course.next_intake && <p className="text-accent font-heading font-bold text-sm mt-2">Next Intake: {course.next_intake}</p>}
+                        <div className="mt-4 space-y-2">
+                          <input value={reserveName} onChange={e => setReserveName(e.target.value)}
+                            placeholder="Your full name" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
+                          <input value={reserveEmail} onChange={e => setReserveEmail(e.target.value)}
+                            placeholder="Your email address" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
+                          <input value={reservePhone} onChange={e => setReservePhone(e.target.value)}
+                            placeholder="Phone number (optional)" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
+                          <button onClick={async () => {
+                            if (!reserveName || !reserveEmail) { toast.error("Enter your name and email"); return; }
+                            try {
+                              await api.post(`/reservations/course/${course.id}`, { name: reserveName, email: reserveEmail, phone: reservePhone });
+                              toast.success("Spot reserved! We'll notify you when enrollment opens 🎉");
+                              setReserveName(""); setReserveEmail(""); setReservePhone("");
+                            } catch { toast.error("Failed to reserve spot"); }
+                          }} className="w-full py-3 bg-accent text-white rounded-xl font-heading font-bold text-sm hover:bg-green-600 transition-all">
+                            Reserve My Spot for Next Intake
+                          </button>
+                        </div>
                       </div>
                     )}
                     {enrolled ? (
