@@ -200,6 +200,25 @@ const fetchReviews = async () => {
                         </span>
                       )}
                     </div>
+                    <div className="space-y-2 mb-4 mt-3">
+                      <div className="flex items-center gap-2 text-slate-600 text-sm">
+                        <span>🕐</span>
+                        <span><strong>Duration:</strong> 8 Weeks</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm">
+                        <span>💻</span>
+                        <span><strong>Format:</strong> Online / Hybrid</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm">
+                        <span>📅</span>
+                        <span><strong>Next Intake:</strong> {course.next_intake || "April 2026"}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm">
+                        <span>🏆</span>
+                        <span><strong>Certificate:</strong> Upon completion</span>
+                      </div>
+                    </div>
+
                     {course.original_price && (
                       <p className="text-accent text-xs font-heading font-bold mb-4">
                         {Math.round((1 - course.price / course.original_price) * 100)}% OFF
