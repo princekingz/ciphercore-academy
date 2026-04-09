@@ -48,7 +48,7 @@ const CATEGORIES = [
 ];
 
 const STATS = [
-  { value: "12,400+", label: "Students Trained" },
+  { value: "8,500+", label: "Students Trained in East & Central Africa." },
   { value: "Top Grads", label: "Work at CipherCore" },
   { value: "110+", label: "Courses" },
   { value: "4.9★", label: "Average Rating" },
@@ -117,7 +117,7 @@ export default function Home() {
               <p className="text-lg text-slate-300 leading-relaxed mb-10 max-w-xl">
                 Cybersecurity, Web Development, AI, Data Analysis, Cloud Computing.
                 Taught by industry professionals. Priced for Africa.
-                Pay with M-Pesa.
+              
               </p>
 
               <div className="flex flex-wrap gap-4 mb-14">
