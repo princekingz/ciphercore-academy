@@ -44,4 +44,18 @@ router.get('/payments', authenticate, requireRole('admin'), async (req, res) => 
   res.json({ payments: rows });
 });
 
+router.post('/payments/:id/confirm', authenticate, requireRole('admin'), async (req, res) => {
+  try {
+    const { rows: payment } = await db.query('SELECT * FROM payments WHERE id=$1', [req.params.id]);
+    if (!payment[0]) return res.status(404).json({ error: 'Payment not found' });
+    await db.query('UPDATE payments SET status=$1 WHERE id=$2', ['completed', req.params.id]);
+    await db.query(
+      `INSERT INTO enrollments (user_id, course_id, payment_method, payment_status, amount_paid)
+       VALUES ($1,$2,'mpesa_manual','completed',$3)
+       ON CONFLICT (user_id, course_id) DO UPDATE SET payment_status='completed'`,
+      [payment[0].user_id, payment[0].course_id, payment[0].amount]
+    );
+    res.json({ success: true });
+  } catch { res.status(500).json({ error: 'Failed to confirm payment' }); }
+});
 module.exports = router;

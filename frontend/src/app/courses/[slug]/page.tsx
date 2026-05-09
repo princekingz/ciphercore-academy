@@ -302,14 +302,29 @@ const fetchReviews = async () => {
                                 <p className="text-accent text-xs font-heading font-bold">✓ {couponDiscount}% discount applied!</p>
                               )}
                             </div>
-                            <p className="font-heading font-bold text-primary text-sm">Pay with M-Pesa</p>
+                            <div className="space-y-3">
+                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                              <p className="font-heading font-bold text-primary text-sm mb-2">Pay via M-Pesa</p>
+                              <div className="space-y-1 text-sm text-slate-600">
+                                <p>1. Go to M-Pesa on your phone</p>
+                                <p>2. Select <strong>Lipa na M-Pesa</strong></p>
+                                <p>3. Select <strong>Buy Goods & Services</strong></p>
+                                <p>4. Enter Till: <strong className="text-primary text-lg">5765737</strong></p>
+                                <p>5. Enter Amount: <strong className="text-accent">KSh {parseInt(String(course.price * (1 - couponDiscount / 100))).toLocaleString()}</strong></p>
+                                <p>6. Enter your PIN and confirm</p>
+                              </div>
+                            </div>
                             <input
-                              type="tel" value={phone} onChange={e => setPhone(e.target.value)}
-                              placeholder="07XX XXX XXX" className="input text-sm"
+                              value={phone} onChange={e => setPhone(e.target.value)}
+                              placeholder="Your M-Pesa phone number e.g. 0712345678" className="input text-sm"
                             />
-                            <button onClick={handleMpesa} disabled={enrolling}
+                            <input
+                              value={mpesaCode} onChange={e => setMpesaCode(e.target.value.toUpperCase())}
+                              placeholder="M-Pesa transaction code e.g. QGH7X8K9L0" className="input text-sm"
+                            />
+                            <button onClick={handleManualMpesa} disabled={enrolling}
                               className="w-full py-3.5 bg-accent text-white rounded-xl font-heading font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-60">
-                              {enrolling ? "Sending prompt..." : "Pay KSh " + parseInt(String(course.price * (1 - couponDiscount / 100))).toLocaleString()}
+                              {enrolling ? "Submitting..." : "Submit Payment"}
                             </button>
                             <button onClick={() => setShowPayment(false)} className="w-full text-slate-400 text-xs hover:text-slate-600 transition-colors">
                               Cancel

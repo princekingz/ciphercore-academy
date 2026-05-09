@@ -88,4 +88,21 @@ router.get('/history', authenticate, async (req, res) => {
   res.json({ payments: rows });
 });
 
+router.post('/manual', authenticate, async (req, res) => {
+  const { phoneNumber, courseId, transactionCode, amount, couponCode } = req.body;
+  if (!phoneNumber || !courseId || !transactionCode) {
+    return res.status(400).json({ error: 'Phone number, course ID and transaction code are required' });
+  }
+  try {
+    await db.query(
+      `INSERT INTO payments (user_id, course_id, amount, currency, method, status, transaction_id)
+       VALUES ($1,$2,$3,'KES','mpesa_manual','pending',$4)`,
+      [req.user.id, courseId, amount, transactionCode]
+    );
+    res.json({ success: true, message: 'Payment submitted successfully! You will be enrolled once confirmed.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to submit payment' });
+  }
+});
+module.exports = router;
 module.exports = router;
