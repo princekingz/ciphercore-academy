@@ -356,6 +356,7 @@ const handleManualMpesa = async () => {
                         )}
                       </div>
                     )}
+                  </div>
 
                     <div className="mt-5 space-y-2.5 pt-4 border-t border-slate-100">
                       {[
