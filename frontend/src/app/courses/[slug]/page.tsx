@@ -37,15 +37,15 @@ export default function CourseDetailPage() {
   const [phone, setPhone] = useState("");
   const [mpesaCode, setMpesaCode] = useState("");
   const [couponCode, setCouponCode] = useState("");
-const [couponDiscount, setCouponDiscount] = useState(0);
-const [couponApplied, setCouponApplied] = useState(false);
-const [reserveName, setReserveName] = useState("");
-const [reserveEmail, setReserveEmail] = useState("");
-const [reservePhone, setReservePhone] = useState("");
-const [reviews, setReviews] = useState<any[]>([]);
-const [sessions, setSessions] = useState<any[]>([]);
-const [newRating, setNewRating] = useState(0);
-const [newComment, setNewComment] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [reserveName, setReserveName] = useState("");
+  const [reserveEmail, setReserveEmail] = useState("");
+  const [reservePhone, setReservePhone] = useState("");
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [newRating, setNewRating] = useState(0);
+  const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
     loadUser();
@@ -60,7 +60,6 @@ const [newComment, setNewComment] = useState("");
     try {
       const { data } = await api.get(`/courses/${slug}`);
       setCourse(data.course);
-      // fetch modules
       try {
         const { data: md } = await api.get(`/courses/${data.course.id}/modules`);
         setModules(md.modules || []);
@@ -80,13 +79,15 @@ const [newComment, setNewComment] = useState("");
       setEnrolled(data.enrolled);
     } catch {}
   };
-const fetchReviews = async () => {
+
+  const fetchReviews = async () => {
     try {
       const { data } = await api.get(`/reviews/course/${course?.id}`);
       setReviews(data.reviews || []);
     } catch {}
   };
- const fetchSessions = async () => {
+
+  const fetchSessions = async () => {
     try {
       const { data } = await api.get(`/live-sessions/course/${course?.id}`);
       setSessions(data.sessions || []);
@@ -107,29 +108,15 @@ const fetchReviews = async () => {
     }
   };
 
-  const handleMpesa = async () => {
-    if (!user) { router.push("/auth/login"); return; }
-    if (!phone) { toast.error("Enter your M-Pesa phone number"); return; }
-    setEnrolling(true);
-    try {
-      await api.post("/payments/mpesa/initiate", { phoneNumber: phone, courseId: course.id });
-      toast.success("Check your phone for the M-Pesa prompt!");
-      setShowPayment(false);
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || "M-Pesa failed. Try again.");
-    } finally {
-      setEnrolling(false);
-    }
-  };
-const handleManualMpesa = async () => {
+  const handleManualMpesa = async () => {
     if (!user) { router.push("/auth/login"); return; }
     if (!phone) { toast.error("Enter your M-Pesa phone number"); return; }
     if (!mpesaCode) { toast.error("Enter your M-Pesa transaction code"); return; }
     setEnrolling(true);
     try {
-      await api.post("/payments/manual", { 
-        phoneNumber: phone, 
-        courseId: course.id, 
+      await api.post("/payments/manual", {
+        phoneNumber: phone,
+        courseId: course.id,
         transactionCode: mpesaCode,
         amount: course.price * (1 - couponDiscount / 100),
         couponCode: couponApplied ? couponCode : null
@@ -163,7 +150,6 @@ const handleManualMpesa = async () => {
     <>
       <Navbar />
       <div className="pt-16 min-h-screen bg-slate-50">
-        {/* Hero */}
         <div className="bg-primary">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <Link href="/courses" className="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm mb-6 transition-colors">
@@ -174,9 +160,7 @@ const handleManualMpesa = async () => {
                 <span className="inline-block px-3 py-1 bg-secondary/20 text-blue-300 text-xs font-heading font-bold rounded-full uppercase tracking-wider mb-4">
                   {course.category}
                 </span>
-                <h1 className="text-3xl md:text-4xl font-heading font-black text-white mb-4 leading-tight">
-                  {course.title}
-                </h1>
+                <h1 className="text-3xl md:text-4xl font-heading font-black text-white mb-4 leading-tight">{course.title}</h1>
                 <p className="text-slate-300 text-base leading-relaxed mb-6">
                   {course.short_description || course.description?.slice(0, 150)}
                 </p>
@@ -186,22 +170,11 @@ const handleManualMpesa = async () => {
                     <span className="text-white font-semibold">{rating}</span>
                     <span>({course.review_count} reviews)</span>
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Users className="w-4 h-4" />
-                    {students.toLocaleString()} students
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <BarChart2 className="w-4 h-4" />
-                    <span className="capitalize">{course.level}</span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Globe className="w-4 h-4" />
-                    English
-                  </span>
+                  <span className="flex items-center gap-1.5"><Users className="w-4 h-4" />{students.toLocaleString()} students</span>
+                  <span className="flex items-center gap-1.5"><BarChart2 className="w-4 h-4" /><span className="capitalize">{course.level}</span></span>
+                  <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" />English</span>
                 </div>
-                <p className="text-slate-400 text-sm">
-                  Created by <span className="text-white font-medium">{course.instructor_name}</span>
-                </p>
+                <p className="text-slate-400 text-sm">Created by <span className="text-white font-medium">{course.instructor_name}</span></p>
               </div>
 
               {/* Enrollment Card */}
@@ -217,40 +190,24 @@ const handleManualMpesa = async () => {
                   </div>
                   <div className="p-6">
                     <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-3xl font-heading font-black text-primary">
-                        KSh {parseInt(course.price).toLocaleString()}
-                      </span>
+                      <span className="text-3xl font-heading font-black text-primary">KSh {parseInt(course.price).toLocaleString()}</span>
                       {course.original_price && (
-                        <span className="text-slate-400 text-sm line-through">
-                          KSh {parseInt(course.original_price).toLocaleString()}
-                        </span>
+                        <span className="text-slate-400 text-sm line-through">KSh {parseInt(course.original_price).toLocaleString()}</span>
                       )}
                     </div>
                     <div className="space-y-2 mb-4 mt-3">
-                      <div className="flex items-center gap-2 text-slate-600 text-sm">
-                        <span>🕐</span>
-                        <span><strong>Duration:</strong> 8 Weeks</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-slate-600 text-sm">
-                        <span>💻</span>
-                        <span><strong>Format:</strong> Online / Hybrid</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-slate-600 text-sm">
-                        <span>📅</span>
-                        <span><strong>Next Intake:</strong> {course.next_intake || "April 2026"}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-slate-600 text-sm">
-                        <span>🏆</span>
-                        <span><strong>Certificate:</strong> Upon completion</span>
-                      </div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm"><span>🕐</span><span><strong>Duration:</strong> 8 Weeks</span></div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm"><span>💻</span><span><strong>Format:</strong> Online / Hybrid</span></div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm"><span>📅</span><span><strong>Next Intake:</strong> {course.next_intake || "April 2026"}</span></div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm"><span>🏆</span><span><strong>Certificate:</strong> Upon completion</span></div>
                     </div>
-
                     {course.original_price && (
                       <p className="text-accent text-xs font-heading font-bold mb-4">
                         {Math.round((1 - course.price / course.original_price) * 100)}% OFF
                       </p>
                     )}
 
+                    {/* Locked Course */}
                     {course.is_locked && !enrolled && (
                       <div className="bg-primary rounded-2xl p-5 text-center mb-4">
                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -262,12 +219,9 @@ const handleManualMpesa = async () => {
                         <p className="text-white/60 text-sm mt-1">Classes are currently in progress.</p>
                         {course.next_intake && <p className="text-accent font-heading font-bold text-sm mt-2">Next Intake: {course.next_intake}</p>}
                         <div className="mt-4 space-y-2">
-                          <input value={reserveName} onChange={e => setReserveName(e.target.value)}
-                            placeholder="Your full name" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
-                          <input value={reserveEmail} onChange={e => setReserveEmail(e.target.value)}
-                            placeholder="Your email address" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
-                          <input value={reservePhone} onChange={e => setReservePhone(e.target.value)}
-                            placeholder="Phone number (optional)" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
+                          <input value={reserveName} onChange={e => setReserveName(e.target.value)} placeholder="Your full name" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
+                          <input value={reserveEmail} onChange={e => setReserveEmail(e.target.value)} placeholder="Your email address" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
+                          <input value={reservePhone} onChange={e => setReservePhone(e.target.value)} placeholder="Phone number (optional)" className="w-full px-4 py-2.5 rounded-xl text-primary text-sm outline-none"/>
                           <button onClick={async () => {
                             if (!reserveName || !reserveEmail) { toast.error("Enter your name and email"); return; }
                             try {
@@ -281,6 +235,8 @@ const handleManualMpesa = async () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Enrollment Section */}
                     {enrolled ? (
                       <div className="space-y-3">
                         <div className="flex items-center gap-2 text-accent font-heading font-semibold text-sm">
@@ -293,24 +249,18 @@ const handleManualMpesa = async () => {
                           </a>
                         )}
                       </div>
-                    ) : (
+                    ) : !course.is_locked ? (
                       <div className="space-y-3">
-                 
-                           {!showPayment ? (
-  <>
-    <button onClick={() => setShowPayment(true)}
-      className="w-full py-3.5 bg-secondary text-white rounded-xl font-heading font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
-      Enroll Now
-    </button>
-  </>
-                        
+                        {!showPayment ? (
+                          <button onClick={() => setShowPayment(true)}
+                            className="w-full py-3.5 bg-secondary text-white rounded-xl font-heading font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
+                            Enroll Now
+                          </button>
                         ) : (
                           <div className="space-y-3">
-
                             <div className="space-y-2 mb-3">
                               <div className="flex gap-2">
-                                <input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())}
-                                  placeholder="Coupon code" className="input text-sm flex-1"/>
+                                <input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder="Coupon code" className="input text-sm flex-1"/>
                                 <button onClick={async () => {
                                   if (!couponCode) return;
                                   try {
@@ -321,11 +271,8 @@ const handleManualMpesa = async () => {
                                   } catch (err: any) { toast.error(err.response?.data?.error || "Invalid coupon"); }
                                 }} className="btn-primary text-sm py-2 px-4">Apply</button>
                               </div>
-                              {couponApplied && (
-                                <p className="text-accent text-xs font-heading font-bold">✓ {couponDiscount}% discount applied!</p>
-                              )}
+                              {couponApplied && <p className="text-accent text-xs font-heading font-bold">✓ {couponDiscount}% discount applied!</p>}
                             </div>
-                            <div className="space-y-3">
                             <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                               <p className="font-heading font-bold text-primary text-sm mb-2">Pay via M-Pesa</p>
                               <div className="space-y-1 text-sm text-slate-600">
@@ -337,26 +284,17 @@ const handleManualMpesa = async () => {
                                 <p>6. Enter your PIN and confirm</p>
                               </div>
                             </div>
-                            <input
-                              value={phone} onChange={e => setPhone(e.target.value)}
-                              placeholder="Your M-Pesa phone number e.g. 0712345678" className="input text-sm"
-                            />
-                            <input
-                              value={mpesaCode} onChange={e => setMpesaCode(e.target.value.toUpperCase())}
-                              placeholder="M-Pesa transaction code e.g. QGH7X8K9L0" className="input text-sm"
-                            />
+                            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Your M-Pesa phone number e.g. 0712345678" className="input text-sm"/>
+                            <input value={mpesaCode} onChange={e => setMpesaCode(e.target.value.toUpperCase())} placeholder="M-Pesa transaction code e.g. QGH7X8K9L0" className="input text-sm"/>
                             <button onClick={handleManualMpesa} disabled={enrolling}
                               className="w-full py-3.5 bg-accent text-white rounded-xl font-heading font-bold text-sm hover:bg-green-600 transition-all disabled:opacity-60">
                               {enrolling ? "Submitting..." : "Submit Payment"}
                             </button>
-                            <button onClick={() => setShowPayment(false)} className="w-full text-slate-400 text-xs hover:text-slate-600 transition-colors">
-                              Cancel
-                            </button>
+                            <button onClick={() => setShowPayment(false)} className="w-full text-slate-400 text-xs hover:text-slate-600 transition-colors">Cancel</button>
                           </div>
                         )}
                       </div>
-                    )}
-                  </div>
+                    ) : null}
 
                     <div className="mt-5 space-y-2.5 pt-4 border-t border-slate-100">
                       {[
@@ -381,26 +319,22 @@ const handleManualMpesa = async () => {
           <div className="grid lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2 space-y-8">
 
-              {/* What you'll learn */}
               {course.what_you_learn?.length > 0 && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-7">
                   <h2 className="font-heading font-bold text-primary text-xl mb-5">What you will learn</h2>
                   <div className="grid md:grid-cols-2 gap-3">
                     {course.what_you_learn.map((item: string, i: number) => (
                       <div key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
-                        <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                        {item}
+                        <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />{item}
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Course Content / Modules */}
               <div className="bg-white rounded-2xl border border-slate-200 p-7">
                 <h2 className="font-heading font-bold text-primary text-xl mb-2">Course Content</h2>
                 <p className="text-slate-500 text-sm mb-5">{modules.length} modules</p>
-
                 {modules.length === 0 ? (
                   <div className="text-center py-10 text-slate-400">
                     <Play className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -419,10 +353,7 @@ const handleManualMpesa = async () => {
                           <div key={lesson.id}
                             onClick={() => enrolled || lesson.is_preview ? setActiveLesson(lesson) : toast.error("Enroll to access this lesson")}
                             className="flex items-center gap-3 px-4 py-3 border-t border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
-                            {enrolled || lesson.is_preview
-                              ? <Play className="w-4 h-4 text-secondary shrink-0" />
-                              : <Lock className="w-4 h-4 text-slate-300 shrink-0" />
-                            }
+                            {enrolled || lesson.is_preview ? <Play className="w-4 h-4 text-secondary shrink-0" /> : <Lock className="w-4 h-4 text-slate-300 shrink-0" />}
                             <span className="text-sm text-slate-600 flex-1">{lesson.title}</span>
                             {lesson.is_preview && <span className="text-xs text-accent font-heading font-semibold">Preview</span>}
                             {lesson.duration > 0 && <span className="text-xs text-slate-400">{Math.floor(lesson.duration / 60)}:{String(lesson.duration % 60).padStart(2,'0')}</span>}
@@ -433,8 +364,7 @@ const handleManualMpesa = async () => {
                   </div>
                 )}
               </div>
-             
-              {/* Live Sessions */}
+
               {enrolled && sessions.length > 0 && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-7">
                   <h2 className="font-heading font-bold text-primary text-xl mb-4">📅 Live Sessions</h2>
@@ -469,25 +399,22 @@ const handleManualMpesa = async () => {
                   </div>
                 </div>
               )}
-              {/* Take Exam Button */}
+
               {enrolled && (
                 <div className="bg-white rounded-2xl border border-slate-200 p-7 flex items-center justify-between">
                   <div>
                     <h3 className="font-heading font-bold text-primary text-lg">Final Exam</h3>
                     <p className="text-slate-400 text-sm mt-1">Complete all lessons then take the final exam to earn your certificate</p>
                   </div>
-                  <button onClick={() => router.push(`/courses/${slug}/exam`)} className="btn-primary shrink-0">
-                    Take Exam
-                  </button>
+                  <button onClick={() => router.push(`/courses/${slug}/exam`)} className="btn-primary shrink-0">Take Exam</button>
                 </div>
               )}
 
-              {/* Description */}
               <div className="bg-white rounded-2xl border border-slate-200 p-7">
                 <h2 className="font-heading font-bold text-primary text-xl mb-4">About this course</h2>
                 <p className="text-slate-600 text-sm leading-relaxed">{course.description}</p>
               </div>
-{/* Reviews */}
+
               <div className="bg-white rounded-2xl border border-slate-200 p-7">
                 <h2 className="font-heading font-bold text-primary text-xl mb-6">Student Reviews</h2>
                 {enrolled && (
@@ -496,30 +423,23 @@ const handleManualMpesa = async () => {
                     <div className="flex gap-2 mb-3">
                       {[1,2,3,4,5].map(star => (
                         <button key={star} onClick={() => setNewRating(star)}
-                          className={`text-2xl transition-transform hover:scale-110 ${star <= newRating ? "text-amber-400" : "text-slate-300"}`}>
-                          ★
-                        </button>
+                          className={`text-2xl transition-transform hover:scale-110 ${star <= newRating ? "text-amber-400" : "text-slate-300"}`}>★</button>
                       ))}
                     </div>
                     <textarea value={newComment} onChange={e => setNewComment(e.target.value)}
-                      placeholder="Share your experience with this course..."
-                      className="input w-full resize-none text-sm mb-3" rows={3}/>
+                      placeholder="Share your experience with this course..." className="input w-full resize-none text-sm mb-3" rows={3}/>
                     <button onClick={async () => {
                       if (!newRating) { toast.error("Select a rating"); return; }
                       try {
                         await api.post(`/reviews/course/${course.id}`, { rating: newRating, comment: newComment });
                         toast.success("Review submitted!");
-                        setNewRating(0);
-                        setNewComment("");
-                        fetchReviews();
+                        setNewRating(0); setNewComment(""); fetchReviews();
                       } catch { toast.error("Failed to submit review"); }
                     }} className="btn-primary text-sm py-2 px-5">Submit Review</button>
                   </div>
                 )}
                 {reviews.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400">
-                    <p className="text-sm">No reviews yet. Be the first to review!</p>
-                  </div>
+                  <div className="text-center py-8 text-slate-400"><p className="text-sm">No reviews yet. Be the first to review!</p></div>
                 ) : (
                   <div className="space-y-4">
                     {reviews.map((r: any) => (
@@ -545,30 +465,21 @@ const handleManualMpesa = async () => {
                 )}
               </div>
 
-              {/* Video Player (if lesson selected) */}
               {activeLesson?.video_url && (enrolled || activeLesson.is_preview) && (
                 <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                   <div className="aspect-video">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${activeLesson.video_url}`}
-                      className="w-full h-full"
-                      allowFullScreen
-                      title={activeLesson.title}
-                    />
+                    <iframe src={`https://www.youtube.com/embed/${activeLesson.video_url}`} className="w-full h-full" allowFullScreen title={activeLesson.title} />
                   </div>
                   <div className="p-5 flex items-center justify-between">
                     <h3 className="font-heading font-bold text-primary">{activeLesson.title}</h3>
                     {enrolled && (
-                      <button
-                        onClick={async () => {
-                          try {
-                            await api.post(`/enrollments/complete-lesson`, { lessonId: activeLesson.id, courseId: course.id });
-                            toast.success("Lesson marked as complete! 🎉");
-                            setActiveLesson({ ...activeLesson, completed: true });
-                          } catch { toast.error("Failed to mark complete"); }
-                        }}
-                        className={`text-sm font-heading font-bold px-4 py-2 rounded-xl transition-all ${activeLesson.completed ? "bg-accent/10 text-accent cursor-default" : "bg-accent text-white hover:bg-green-600"}`}
-                      >
+                      <button onClick={async () => {
+                        try {
+                          await api.post(`/enrollments/complete-lesson`, { lessonId: activeLesson.id, courseId: course.id });
+                          toast.success("Lesson marked as complete! 🎉");
+                          setActiveLesson({ ...activeLesson, completed: true });
+                        } catch { toast.error("Failed to mark complete"); }
+                      }} className={`text-sm font-heading font-bold px-4 py-2 rounded-xl transition-all ${activeLesson.completed ? "bg-accent/10 text-accent cursor-default" : "bg-accent text-white hover:bg-green-600"}`}>
                         {activeLesson.completed ? "✓ Completed" : "Mark Complete"}
                       </button>
                     )}
@@ -577,7 +488,6 @@ const handleManualMpesa = async () => {
               )}
             </div>
 
-            {/* Instructor */}
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-slate-200 p-6">
                 <h3 className="font-heading font-bold text-primary mb-4">Your Instructor</h3>
@@ -590,9 +500,7 @@ const handleManualMpesa = async () => {
                     <p className="text-slate-500 text-xs">Course Instructor</p>
                   </div>
                 </div>
-                {course.instructor_bio && (
-                  <p className="text-slate-500 text-xs leading-relaxed">{course.instructor_bio}</p>
-                )}
+                {course.instructor_bio && <p className="text-slate-500 text-xs leading-relaxed">{course.instructor_bio}</p>}
               </div>
 
               {course.requirements?.length > 0 && (
