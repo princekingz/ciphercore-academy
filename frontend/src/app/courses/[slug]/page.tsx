@@ -35,6 +35,7 @@ export default function CourseDetailPage() {
   const [modules, setModules] = useState<any[]>([]);
   const [showPayment, setShowPayment] = useState(false);
   const [phone, setPhone] = useState("");
+  const [mpesaCode, setMpesaCode] = useState("");
   const [couponCode, setCouponCode] = useState("");
 const [couponDiscount, setCouponDiscount] = useState(0);
 const [couponApplied, setCouponApplied] = useState(false);
@@ -116,6 +117,28 @@ const fetchReviews = async () => {
       setShowPayment(false);
     } catch (err: any) {
       toast.error(err.response?.data?.error || "M-Pesa failed. Try again.");
+    } finally {
+      setEnrolling(false);
+    }
+  };
+const handleManualMpesa = async () => {
+    if (!user) { router.push("/auth/login"); return; }
+    if (!phone) { toast.error("Enter your M-Pesa phone number"); return; }
+    if (!mpesaCode) { toast.error("Enter your M-Pesa transaction code"); return; }
+    setEnrolling(true);
+    try {
+      await api.post("/payments/manual", { 
+        phoneNumber: phone, 
+        courseId: course.id, 
+        transactionCode: mpesaCode,
+        amount: course.price * (1 - couponDiscount / 100),
+        couponCode: couponApplied ? couponCode : null
+      });
+      toast.success("Payment submitted! You will be enrolled once confirmed by admin. 🎉");
+      setShowPayment(false);
+      setMpesaCode("");
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || "Failed to submit payment. Try again.");
     } finally {
       setEnrolling(false);
     }
